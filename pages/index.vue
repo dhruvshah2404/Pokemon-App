@@ -12,13 +12,15 @@
 <script>
 import List from '../components/List'
 export default {
+  mounted() {
+    this.$store.dispatch('getall');
+  },
 }
 </script>
 
 <style>
 .container {
   margin: 0 auto;
-  justify-content: center;
   align-items: center;
   text-align: center;
 }
