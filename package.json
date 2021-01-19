@@ -11,11 +11,13 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.12.5",
     "core-js": "^3.8.2",
+    "less": "^4.1.0",
     "nuxt": "^2.14.12"
   },
   "devDependencies": {
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-prettier": "^3.3.1",
+    "less-loader": "^7.2.1",
     "prettier": "^2.2.1"
   }
 }

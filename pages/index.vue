@@ -4,20 +4,14 @@
       <h1 class="title">
         Pokemon App
       </h1>
+      <List />
     </div>
   </div>
 </template>
 
 <script>
+import List from '../components/List'
 export default {
-  async mounted() {
-    let link = 'https://pokeapi.co/api/v2/pokemon'
-    await this.$axios.$get(link)
-    .then((resp) => {})
-      .then((data) => {
-        console.log(data);
-      })
-  },
 }
 </script>
 
