@@ -4,6 +4,7 @@
       <h1 class="title">
         Pokemon App
       </h1>
+      <h3>wait 2 minutes before searching I'm still working on how to load data fast</h3>
       <List />
     </div>
   </div>
