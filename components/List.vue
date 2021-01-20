@@ -8,29 +8,37 @@
         @input="search()"
         v-model="text"
       />
-      <div class="results" v-if="text">
+      <div class="results" v-if="filtered.length >= 1">
         <ul class="list" v-for="poke in filtered" :key="poke.id">
           <li @click="openPokemon(poke)">{{ poke.name }}</li>
         </ul>
       </div>
     </div>
-    <div class="pokecard" v-for="pokemon in pokemons" :key="pokemon.id" @click="openPokemon(pokemon)">
+    <div
+      class="pokecard"
+      v-for="pokemon in pokemons"
+      :key="pokemon.id"
+      @click="openPokemon(pokemon)"
+    >
       <div class="poke-img">
         <img :src="pokemon.image" alt="" />
       </div>
       <div class="name">{{ pokemon.name }}</div>
-      <div :class="po.type.name + ' ' + 'type'" v-for="po in pokemon.type" :key="po.id">{{ po.type.name }}</div>
+      <div
+        :class="po.type.name + ' ' + 'type'"
+        v-for="po in pokemon.type"
+        :key="po.id"
+      >
+        {{ po.type.name }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'List',
-  components:{
-    
-  },
+  components: {},
   data() {
     return {
       filtered: [],
@@ -50,15 +58,19 @@ export default {
     },
   },
   methods: {
-    openPokemon(pokename){
-      this.$router.push({name:'about',params:{pokename}})
+    openPokemon(pokename) {
+      this.$router.push({ name: 'about', params: { pokename } })
     },
     search(value) {
-      this.active = true
-      let filtered = this.$store.state.pokemons.filter((pokemon) =>
-        pokemon.name.includes(this.text)
-      )
-      this.filtered = filtered.slice(0, 5);
+      if (this.text.length > 1) {
+        let filtered = this.$store.state.pokemons.filter((pokemon) =>
+          pokemon.name.includes(this.text)
+        )
+        this.filtered = filtered.slice(0, 5)
+      }
+      else{
+        this.filtered =[]
+      }
     },
     giveImage(array) {
       array.forEach((elem) => {
@@ -144,12 +156,12 @@ export default {
   display: flex;
   justify-content: center;
   /* background: #FF9800; */
-  align-items:self-start;
+  align-items: self-start;
   font-weight: 500;
   color: #35495e;
 }
 .type {
-   height: fit-content;
+  height: fit-content;
   padding: 3px 10px;
   color: white;
   border-radius: 20px;
@@ -226,17 +238,15 @@ img {
 }
 .dragon {
   background: linear-gradient(180deg, #53a4cf 50%, #f16e57 50%);
-;
 }
 .dark {
   background: #707070;
 }
 .unknown {
   background: rgb(90, 67, 205);
-  
 }
 .fairy {
-  background-color: #fdb9e9;;
+  background-color: #fdb9e9;
 }
 .shadow {
   background: rgb(186, 186, 186);
