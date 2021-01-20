@@ -8,7 +8,7 @@
         @input="search()"
         v-model="text"
       />
-      <div class="results" v-if="filtered">
+      <div class="results" v-if="text">
         <ul class="list" v-for="poke in filtered" :key="poke.id">
           <li @click="openPokemon(poke)">{{ poke.name }}</li>
         </ul>
