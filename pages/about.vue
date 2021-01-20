@@ -1,5 +1,6 @@
-<template>
-  <div class="container pokemon-cont">
+<template><div>
+  <p @click="$router.go(-1)">Back</p>
+   <div class="container pokemon-cont">
     <img :src="pokemon.image" alt="" srcset="" />
     <h1 class="subtitle">{{ pokemon.name }}</h1>
     <div class="types">
@@ -31,6 +32,8 @@
       </table>
     </div>
   </div>
+</div>
+ 
 </template>
 
 <script>
@@ -75,6 +78,16 @@ export default {
 }
 </script>
 <style lang="less">
+p{
+  text-align: center;
+  width: 100px;
+  margin: auto;
+  padding: 5px 10px;
+  background: #9189ff;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
 .pokemon-cont {
   font-size: 20px;
   width: 90%;
