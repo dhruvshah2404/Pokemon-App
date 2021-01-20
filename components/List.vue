@@ -5,7 +5,7 @@
         type="text"
         class="search-input"
         placeholder="Search ..."
-        @input="search()"
+        @input="search"
         v-model="text"
       />
       <div class="results" v-if="filtered.length >= 1">
