@@ -1,5 +1,8 @@
 <template>
   <div>
+    <h1 class="title">
+        Pokemon App
+      </h1>
     <Nuxt />
   </div>
 </template>
@@ -30,7 +33,10 @@ html {
   box-sizing: border-box;
   margin: 0;
 }
-
+.title{
+  text-align: center;
+  text-transform: capitalize;
+}
 .button--green {
   display: inline-block;
   border-radius: 4px;

@@ -1,10 +1,6 @@
 <template>
   <div class="container">
     <div>
-      <h1 class="title">
-        Pokemon App
-      </h1>
-      <h3>wait 2 minutes before searching I'm still working on how to load data fast</h3>
       <List />
     </div>
   </div>
@@ -39,17 +35,22 @@ export default {
     sans-serif;
   display: block;
   font-weight: 300;
-  font-size: 55px;
+  font-size: 45px;
+  margin: 10px 0;
   color: #35495e;
   letter-spacing: 1px;
 }
 
 .subtitle {
   font-weight: 300;
-  font-size: 42px;
+  font-size: 40px;
   color: #526488;
   word-spacing: 5px;
   padding-bottom: 15px;
+  text-align: center;
+  text-transform: capitalize;
+  margin: 10px 0;
+  padding: 0;
 }
 
 .links {
