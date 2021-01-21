@@ -5,10 +5,10 @@
         type="text"
         class="search-input"
         placeholder="Search ..."
-        @input="search"
+        v-on:input="search"
         v-model="text"
       />
-      <div class="results" v-if="filtered.length >= 1">
+      <div class="results">
         <ul class="list" v-for="poke in filtered" :key="poke.id">
           <li @click="openPokemon(poke)">{{ poke.name }}</li>
         </ul>
@@ -61,12 +61,12 @@ export default {
     openPokemon(pokename) {
       this.$router.push({ name: 'about', params: { pokename } })
     },
-    search(value) {
+    search() {
       if (this.text.length > 1) {
-        let filtered = this.$store.state.pokemons.filter((pokemon) =>
+        let newarray = this.$store.state.pokemons.filter((pokemon) =>
           pokemon.name.includes(this.text)
         )
-        this.filtered = filtered.slice(0, 5)
+        this.filtered = newarray.slice(0, 5);
       }
       else{
         this.filtered =[]
@@ -87,7 +87,7 @@ export default {
   },
   async mounted() {
     this.loading = true
-    let link = 'https://pokeapi.co/api/v2/pokemon'
+    let link = 'https://pokeapi.co/api/v2/pokemon?limit=6'
     let response = await this.$axios.$get(link)
     this.pokemons = response.results
 

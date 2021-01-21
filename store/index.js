@@ -20,5 +20,7 @@ export const actions = {
 
    commit('setPokemon',data);
 
+   alert('done')  
+
   }
 }

@@ -9,7 +9,7 @@
 <script>
 import List from '../components/List'
 export default {
-  mounted() {
+  created() {
     this.$store.dispatch('getall');
   },
 }
