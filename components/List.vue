@@ -5,7 +5,7 @@
         type="text"
         class="search-input"
         placeholder="Search ..."
-        v-on:input="search"
+        v-on:keyup="search"
         v-model="text"
       />
       <div class="results">
@@ -64,9 +64,11 @@ export default {
     search() {
       if (this.text.length > 1) {
         let newarray = this.$store.state.pokemons.filter((pokemon) =>
-          pokemon.name.includes(this.text)
+          pokemon.name.includes(this.text.toLowerCase())
         )
         this.filtered = newarray.slice(0, 5);
+
+        return
       }
       else{
         this.filtered =[]
