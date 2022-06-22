@@ -1,12 +1,13 @@
-<template><div>
+<template>
+<div class="container">
   <p @click="$router.go(-1)">Back</p>
-   <div class="container pokemon-cont">
-    <img :src="pokemon.image" alt="" srcset="" />
+   <div class=" pokemon-cont" v-if="pokemon">
+    <img :src="pokemon.image" alt="" srcset="" class="main-img" />
     <h1 class="subtitle">{{ pokemon.name }}</h1>
     <div class="types">
       <div
         :class="po.type.name + ' ' + 'type'"
-        v-for="po in pokemon.type"
+        v-for="po in pokemon.types"
         :key="po.id"
       >
         {{ po.type.name }}
@@ -45,35 +46,27 @@ export default {
       img: '',
       passedData:{},
       url:''
-    }
+    } 
   },
   computed: {
-    img() {
-      return this.img
-    },
+
+  },
+  async beforeMount() {
+    
+  },
+  async mounted(){
+   let id = this.$route.query.id;
+    let url = `https://pokeapi.co/api/v2/pokemon/${id}/`
+    console.log(url);
+    await this.$axios.get(url).then(({data})=>{
+      let image = data.sprites.other['official-artwork'].front_default;
+      this.pokemon = data;
+      this.pokemon.image = image;
+    })
   },
   async created() {
-    this.passedData = this.$route.params.pokename
-    this.url = this.passedData.url
-    let response = await this.$axios.$get(this.url)
-    this.pokemon = response
-    this.$set(
-      this.pokemon,
-      'image',
-      response.sprites.other['official-artwork'].front_default
-    )
-    this.$set(this.pokemon, 'type', response.types)
-
-    this.$set(
-      this.pokemon,
-      'abilities',
-      response.abilities
-    )
-    this.$set(
-      this.pokemon,
-      'stats',
-      response.stats
-    )
+  
+    
   },
 }
 </script>
@@ -96,7 +89,27 @@ p{
   box-shadow: 0px 0px 20px -5px grey;
   border-radius: 25px;
   margin: 20px auto !important;
-  padding: 20px 0;
+
+  .subtitle{
+  font-weight: 300;
+  font-size: 40px;
+  color: #526488;
+  word-spacing: 5px;
+  padding-bottom: 15px;
+  text-align: center;
+  margin: 10px 0;
+  padding: 0;
+
+  &::first-letter{
+    text-transform: capitalize;
+
+  }
+
+
+  }
+  img.main-img{
+    width: 200px;
+  }
 }
 .types ,.attributes,.abilities{
   display: flex;

@@ -1,5 +1,5 @@
 <template>
-  <div class="main container">
+  <div class="list-container">
     <div class="input">
       <input
         type="text"
@@ -9,16 +9,24 @@
         v-model="text"
       />
       <div class="results">
+         
         <ul class="list" v-for="poke in filtered" :key="poke.id">
-          <li @click="openPokemon(poke)">{{ poke.name }}</li>
+          <li @click="openPokemon(poke.url)">{{ poke.name }}</li>
         </ul>
       </div>
     </div>
-    <div
+    <div class="pokemons-list">
+        <v-progress-circular
+          v-if="loading"
+            indeterminate
+            color="primary"
+          ></v-progress-circular>
+           <div
+           v-else
       class="pokecard"
       v-for="pokemon in pokemons"
       :key="pokemon.id"
-      @click="openPokemon(pokemon)"
+      @click="openPokemon(pokemon.url)"
     >
       <div class="poke-img">
         <img :src="pokemon.image" alt="" />
@@ -32,19 +40,24 @@
         {{ po.type.name }}
       </div>
     </div>
+    </div>
+   
+    <pagination @next="next" @changePage="changePage" />
   </div>
 </template>
 
 <script>
+import Pagination from './Pagination.vue'
 export default {
   name: 'List',
-  components: {},
+  components: { Pagination },
   data() {
     return {
       filtered: [],
       loading: false,
       pokemons: [],
       text: '',
+      loading: true,
       // active:false
     }
   },
@@ -58,20 +71,61 @@ export default {
     },
   },
   methods: {
-    openPokemon(pokename) {
-      this.$router.push({ name: 'about', params: { pokename } })
+    async changePage(offset) {
+      this.loading = true
+
+      let link = `https://pokeapi.co/api/v2/pokemon?limit=12&&offset=${offset}`
+      let response = await this.$axios.$get(link)
+
+      this.pokemons = response.results
+      this.$store.commit('setPokemon', response)
+
+      this.giveImage(this.pokemons)
+
+      setTimeout(() => {
+              this.loading = false
+
+      }, 2000);
+    },
+    async next() {
+      this.loading = true
+
+      let nextLink = this.$store.state.pagination.next
+      let response = await this.$axios.$get(nextLink)
+
+      this.pokemons = response.results
+      this.$store.commit('setPokemon', response)
+
+      this.giveImage(this.pokemons)
+      this.loading = false
+    },
+    async previous() {
+      this.loading = true
+
+      let nextLink = this.$store.state.pagination.previous
+      let response = await this.$axios.$get(nextLink)
+
+      this.pokemons = response.results
+      this.$store.commit('setPokemon', response)
+
+      this.giveImage(this.pokemons)
+      this.loading = false
+    },
+    openPokemon(url) {
+      var last = url.split('/')
+      var id = last[6]
+      this.$router.push({ name: 'about', query: { id } })
     },
     search() {
       if (this.text.length > 1) {
         let newarray = this.$store.state.pokemons.filter((pokemon) =>
           pokemon.name.includes(this.text.toLowerCase())
         )
-        this.filtered = newarray.slice(0, 5);
+        this.filtered = newarray.slice(0, 5)
 
         return
-      }
-      else{
-        this.filtered =[]
+      } else {
+        this.filtered = []
       }
     },
     giveImage(array) {
@@ -89,27 +143,32 @@ export default {
   },
   async mounted() {
     this.loading = true
-    let link = 'https://pokeapi.co/api/v2/pokemon?limit=6'
+    let link = 'https://pokeapi.co/api/v2/pokemon?limit=12'
     let response = await this.$axios.$get(link)
     this.pokemons = response.results
-
     this.giveImage(this.pokemons)
+    setTimeout(() => {
+              this.loading = false
+
+      }, 2000);
   },
 }
 </script>
 
 <style lang='less'>
 .container {
+}
+.pokemons-list {
+  // max-width: 500px;
+  max-width: 850px;
+  min-height: calc(100vh - 252px);
   margin: 0 auto;
   align-items: center;
   text-align: center;
-}
-.main {
-  // max-width: 500px;
-  max-width: 850px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
+  // padding-top: 100px;
 }
 .input {
   width: 100%;
@@ -183,6 +242,7 @@ img {
   margin: 20px 0;
   height: 300px;
   width: 230px;
+  cursor: pointer;
   /* border: 1px solid lightgrey; */
   border-radius: 20px;
   display: flex;

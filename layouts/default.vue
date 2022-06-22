@@ -1,8 +1,6 @@
 <template>
-  <div>
-    <h1 class="title">
-        Pokemon App
-      </h1>
+  <div id="app">
+    <navbar />
     <Nuxt />
   </div>
 </template>
@@ -33,9 +31,9 @@ html {
   box-sizing: border-box;
   margin: 0;
 }
-.title{
-  text-align: center;
-  text-transform: capitalize;
+
+#app{
+
 }
 .button--green {
   display: inline-block;
@@ -66,3 +64,12 @@ html {
   background-color: #35495e;
 }
 </style>
+
+
+<script>
+import Navbar from '../components/Navbar.vue'
+export default {
+  components: { Navbar },
+  
+}
+</script>
