@@ -1,6 +1,6 @@
 <template>
 <div class="container">
-  <p @click="$router.go(-1)">Back</p>
+  <p class="back-btn" @click="$router.go(-1)">Back</p>
    <div class=" pokemon-cont" v-if="pokemon">
     <img :src="pokemon.image" alt="" srcset="" class="main-img" />
     <h1 class="subtitle">{{ pokemon.name }}</h1>
@@ -71,12 +71,15 @@ export default {
 }
 </script>
 <style lang="less">
-p{
+.container{
+  padding-top: 95px;
+}
+p.back-btn{
   text-align: center;
   width: 100px;
   margin: auto;
   padding: 5px 10px;
-  background: #9189ff;
+  background: mediumpurple;
   color: white;
   border-radius: 10px;
   cursor: pointer;
@@ -89,7 +92,11 @@ p{
   box-shadow: 0px 0px 20px -5px grey;
   border-radius: 25px;
   margin: 20px auto !important;
+  padding: 20px;
 
+  @media screen and (max-width: 600px) {
+    font-size: 16px;
+  }
   .subtitle{
   font-weight: 300;
   font-size: 40px;
@@ -99,6 +106,10 @@ p{
   text-align: center;
   margin: 10px 0;
   padding: 0;
+
+  @media screen and (max-width: 600px) {
+    font-size: 32px;
+  }
 
   &::first-letter{
     text-transform: capitalize;
@@ -111,8 +122,20 @@ p{
     width: 200px;
   }
 }
+.type {
+  height: fit-content;
+  padding: 3px 10px;
+  color: white;
+  border-radius: 20px;
+  font-size: 14px;
+  text-transform: capitalize;
+  max-width: 100px;
+  margin-right: 5px;
+  position: initial;
+}
 .types ,.attributes,.abilities{
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   margin: 10px 0;
   text-transform: capitalize;

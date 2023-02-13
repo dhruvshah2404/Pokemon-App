@@ -10,6 +10,7 @@ export const state = () => ({
   pagination: {
     count: 0
   },
+  limit: 12
 })
 export const mutations = {
   setPokemon(state , list){
@@ -20,7 +21,7 @@ export const mutations = {
 
 export const actions = {
   async getall({commit}){
-    let response =  await this.$axios.$get('https://pokeapi.co/api/v2/pokemon?limit=12')
+    let response =  await this.$axios.$get('https://pokeapi.co/api/v2/pokemon?limit=100000')
     let data = response;
 
    commit('setPokemon',data);

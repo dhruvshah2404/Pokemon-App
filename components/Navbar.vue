@@ -19,6 +19,7 @@ export default {}
   width: 100%;
   backdrop-filter: blur(20px);
   box-shadow: 0px 0px 4px -2px #35495e;
+  z-index: 10;
 }
 
 .title{

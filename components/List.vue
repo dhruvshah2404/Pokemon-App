@@ -9,39 +9,38 @@
         v-model="text"
       />
       <div class="results">
-         
         <ul class="list" v-for="poke in filtered" :key="poke.id">
           <li @click="openPokemon(poke.url)">{{ poke.name }}</li>
         </ul>
       </div>
     </div>
     <div class="pokemons-list">
-        <v-progress-circular
-          v-if="loading"
-            indeterminate
-            color="primary"
-          ></v-progress-circular>
-           <div
-           v-else
-      class="pokecard"
-      v-for="pokemon in pokemons"
-      :key="pokemon.id"
-      @click="openPokemon(pokemon.url)"
-    >
-      <div class="poke-img">
-        <img :src="pokemon.image" alt="" />
-      </div>
-      <div class="name">{{ pokemon.name }}</div>
+      <v-progress-circular
+        v-if="loading"
+        indeterminate
+        color="primary"
+      ></v-progress-circular>
       <div
-        :class="po.type.name + ' ' + 'type'"
-        v-for="po in pokemon.type"
-        :key="po.id"
+        v-else
+        class="pokecard"
+        v-for="pokemon in pokemons"
+        :key="pokemon.id"
+        @click="openPokemon(pokemon.url)"
       >
-        {{ po.type.name }}
+        <div class="poke-img">
+          <img :src="pokemon.image" alt="" />
+        </div>
+        <div class="name">{{ pokemon.name }}</div>
+        <div
+          :class="po.type.name + ' ' + 'type'"
+          v-for="po in pokemon.type"
+          :key="po.id"
+        >
+          {{ po.type.name }}
+        </div>
       </div>
     </div>
-    </div>
-   
+
     <pagination @next="next" @changePage="changePage" />
   </div>
 </template>
@@ -58,6 +57,7 @@ export default {
       pokemons: [],
       text: '',
       loading: true,
+      page: 1,
       // active:false
     }
   },
@@ -69,11 +69,18 @@ export default {
         return this.filtered
       }
     },
+    items() {
+      return this.$store.state.limit
+    },
   },
   methods: {
-    async changePage(offset) {
-      this.loading = true
+    async changePage(params) {
+      let page = params.page
+      this.page = page
+      let offset = params.offset
 
+      this.loading = true
+      this.$router.push(`?page=${page}`)
       let link = `https://pokeapi.co/api/v2/pokemon?limit=12&&offset=${offset}`
       let response = await this.$axios.$get(link)
 
@@ -83,14 +90,14 @@ export default {
       this.giveImage(this.pokemons)
 
       setTimeout(() => {
-              this.loading = false
-
-      }, 2000);
+        this.loading = false
+      }, 1000)
     },
     async next() {
       this.loading = true
 
       let nextLink = this.$store.state.pagination.next
+
       let response = await this.$axios.$get(nextLink)
 
       this.pokemons = response.results
@@ -143,14 +150,25 @@ export default {
   },
   async mounted() {
     this.loading = true
-    let link = 'https://pokeapi.co/api/v2/pokemon?limit=12'
+    this.page = this.$route.query.page
+    let page = this.$route.query.page
+
+    let link = ''
+
+    if (page) {
+      let offset = (page - 1) * this.items
+      link = `https://pokeapi.co/api/v2/pokemon?limit=12&&offset=${offset}`
+    } else {
+      link = `https://pokeapi.co/api/v2/pokemon?limit=12`
+    }
+
     let response = await this.$axios.$get(link)
+
     this.pokemons = response.results
     this.giveImage(this.pokemons)
     setTimeout(() => {
-              this.loading = false
-
-      }, 2000);
+      this.loading = false
+    }, 1000)
   },
 }
 </script>
@@ -161,7 +179,9 @@ export default {
 .pokemons-list {
   // max-width: 500px;
   max-width: 850px;
+  padding-top: 80px;
   min-height: calc(100vh - 252px);
+  row-gap: 80px;
   margin: 0 auto;
   align-items: center;
   text-align: center;
@@ -171,7 +191,10 @@ export default {
   // padding-top: 100px;
 }
 .input {
-  width: 100%;
+  position: relative;
+  width: fit-content;
+  margin: auto;
+
   .search-input {
     margin-top: 20px;
     width: 310px;
@@ -189,30 +212,43 @@ export default {
   }
 
   .results {
+    position: absolute;
     width: 300px;
     margin: 5px auto;
-    box-shadow: 0px 0px 20px -10px #848484;
+    box-shadow: 0px 0px 20px 0px lightgrey;
     border-radius: 15px;
+    background: #ffffff85;
+    z-index: 2;
+    backdrop-filter: blur(20px);
 
     .list {
       list-style: none;
       padding: 0;
       text-align: left;
+
+      &:first-child {
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+      }
+      &:last-child {
+        border-bottom-left-radius: inherit;
+        border-bottom-right-radius: inherit;
+      }
+      &:hover {
+        background: mediumpurple;
+        color: white;
+      }
     }
     li {
       padding: 10px 20px;
       cursor: pointer;
-
-      &:hover {
-        background: aliceblue;
-      }
     }
   }
 }
 
 .name {
   text-transform: capitalize;
-  font-size: 22px;
+  font-size: 18px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -220,6 +256,8 @@ export default {
   align-items: self-start;
   font-weight: 500;
   color: #35495e;
+  position: absolute;
+  bottom: 63px;
 }
 .type {
   height: fit-content;
@@ -230,25 +268,41 @@ export default {
   text-transform: capitalize;
   max-width: 100px;
   margin-right: 5px;
+  position: absolute;
+  bottom: 22px;
 }
 .poke-img {
   width: 200px;
   margin: auto;
+  position: absolute;
+  top: -65px;
+
+  img {
+    width: 200px;
+    transition: 1s;
+  }
 }
-img {
-  width: 200px;
-}
+
 .pokecard {
-  margin: 20px 0;
-  height: 300px;
+  // margin: 53px 0;
+  height: 230px;
   width: 230px;
+  position: relative;
   cursor: pointer;
-  /* border: 1px solid lightgrey; */
-  border-radius: 20px;
+  border-radius: 44px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   box-shadow: 0px 0px 20px 0px lightgrey;
+  transition: 0.5s border ease-in-out;
+
+  &:hover {
+    border: 3px solid mediumpurple;
+
+    img {
+      width: 210px;
+    }
+  }
 }
 
 .normal {
@@ -289,7 +343,7 @@ img {
 .water {
   background: #6d88b0;
 }
-.electic {
+.electric {
   background: #f1d177;
 }
 .psychic {

@@ -15,24 +15,25 @@
   export default {
     name:"pagination",
     props:{
-
+      currentPage: Number
     },
     computed:{
       total(){
         return Math.ceil(this.$store.state.pagination.count / this.items)
       },
-
+      items(){
+        return this.$store.state.limit
+      }
     },
     data () {
       return {
         page: 1,
-        items: 12
       }
     },
     methods: {
       changePage(page){
         let offset = (page-1) * this.items
-        this.$emit("changePage",offset)
+        this.$emit("changePage",{ offset : offset, page : page })
       },
       // next(page){
       //   this.$emit("next",page)
@@ -41,9 +42,19 @@
         this.$emit("previous",page)
       }
     },
+    mounted() {
+      this.page = parseInt(this.$route.query.page);
+
+    },
   }
 </script>
 
 <style lang="less">
+.text-center{
+  margin: 20px 0;
+}
+.theme--light.v-pagination .v-pagination__item--active{
+  background: mediumpurple;
+}
 
 </style>
